@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CareHub Hospital Management</title>
+    <style>
+      :root {
+        --bg: #edf4ff;
+        --panel: #ffffff;
+        --panel-alt: #f6f9ff;
+        --primary: #2d6cdf;
+        --primary-dark: #1747a6;
+        --primary-soft: #dfe9ff;
+        --success: #22a06b;
+        --success-soft: #ddf9ef;
+        --warning: #f4b740;
+        --warning-soft: #fff3d6;
+        --danger: #e15b5b;
+        --danger-soft: #ffe3e3;
+        --text: #152238;
+        --muted: #66738f;
+        --border: #e7edf8;
+        --shadow: 0 18px 40px rgba(31, 80, 161, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(180deg, #edf4ff 0%, #f8fbff 100%);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .app {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .app[hidden] {
+        display: none;
+      }
+
+      .login-screen[hidden] {
+        display: none;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .login-screen {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .login-card {
+        width: min(420px, 100%);
+        padding: 32px;
+        border-radius: 22px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .login-card h1 {
+        margin: 0 0 8px;
+      }
+
+      .login-card > p {
+        margin: 0 0 24px;
+        color: var(--muted);
+      }
+
+      .login-card .register-btn {
+        width: 100%;
+      }
+
+      .sidebar {
+        width: 260px;
+        background: linear-gradient(180deg, #102a4c 0%, #173d6e 100%);
+        color: #fff;
+        padding: 28px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 12px 10px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #62c0ff, #2d6cdf);
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        box-shadow: 0 12px 24px rgba(64, 125, 255, 0.35);
+      }
+
+      .brand h2 {
+        margin: 0;
+        font-size: 1.4rem;
+      }
+
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .nav-item.active {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .nav-icon {
+        width: 28px;
+        height: 28px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 14px;
+      }
+
+      .sidebar-card {
+        margin-top: auto;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 18px 16px;
+      }
+
+      .sidebar-card h4 {
+        margin: 0 0 4px;
+        font-size: 1rem;
+      }
+
+      .sidebar-card p {
+        margin: 0 0 16px;
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.5;
+        font-size: 0.86rem;
+      }
+
+      .sidebar-card button {
+        width: 100%;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #70d0ff, #2d6cdf);
+        padding: 10px 12px;
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .main {
+        flex: 1;
+        padding: 28px 28px 32px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        margin-bottom: 26px;
+      }
+
+      .search-box {
+        flex: 1;
+        max-width: 540px;
+        position: relative;
+      }
+
+      .search-box input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px 18px 14px 46px;
+        background: var(--panel);
+        font-size: 0.96rem;
+        outline: none;
+      }
+
+      .search-box::before {
+        content: "🔎";
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.9rem;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .action-btn {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        color: var(--text);
+        padding: 11px 18px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        border: none;
+        box-shadow: 0 12px 18px rgba(45, 108, 223, 0.2);
+      }
+
+      .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 8px 12px;
+      }
+
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #bfe7ff, #61b1ff);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        color: var(--primary-dark);
+      }
+
+      .user-info {
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .user-name {
+        font-size: 0.92rem;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+      }
+
+      .stat-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .stat-header span {
+        color: var(--muted);
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .stat-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 1.1rem;
+      }
+
+      .blue { background: var(--primary-soft); color: var(--primary); }
+      .green { background: var(--success-soft); color: var(--success); }
+      .amber { background: var(--warning-soft); color: #b67b00; }
+      .red { background: var(--danger-soft); color: var(--danger); }
+
+      .stat-value {
+        font-size: clamp(1.5rem, 2vw, 2rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin: 0 0 8px;
+        color: var(--muted);
+      }
+
+      .stat-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 700;
+      }
+
+      .trend-up { background: var(--success-soft); color: var(--success); }
+      .trend-down { background: var(--danger-soft); color: var(--danger); }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.9fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+
+      .card h3 {
+        margin: 0 0 18px;
+        font-size: 1.05rem;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .input-group.full {
+        grid-column: 1 / -1;
+      }
+
+      label {
+        font-size: 0.78rem;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      input, select {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--panel-alt);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.92rem;
+        color: var(--text);
+        outline: none;
+      }
+
+      input:focus, select:focus {
+        border-color: rgba(45, 108, 223, 0.5);
+        box-shadow: 0 0 0 4px rgba(45, 108, 223, 0.1);
+      }
+
+      .register-btn {
+        margin-top: 10px;
+        padding: 13px 16px;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .appointment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .empty-state {
+        padding: 24px 16px;
+        border: 1px dashed var(--border);
+        border-radius: 14px;
+        color: var(--muted);
+        text-align: center;
+        line-height: 1.5;
+      }
+
+      .page-view[hidden] {
+        display: none;
+      }
+
+      .page-view {
+        display: grid;
+        gap: 20px;
+      }
+
+      .page-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .page-heading h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .table-action {
+        border: 0;
+        background: transparent;
+        color: var(--primary);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 6px;
+      }
+
+      .table-action.delete {
+        color: var(--danger);
+      }
+
+      .notice {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .modal-overlay[hidden] {
+        display: none;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: rgba(16, 42, 76, 0.55);
+      }
+
+      .modal-card {
+        width: min(560px, 100%);
+        max-height: 90vh;
+        overflow-y: auto;
+        background: var(--panel);
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .auth-error {
+        min-height: 1.25em;
+        margin: 10px 0 0;
+        color: var(--danger);
+        font-size: 0.85rem;
+      }
+
+      .appointment-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--panel-alt);
+      }
+
+      .patient-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .patient-meta h4 {
+        margin: 0;
+        font-size: 0.94rem;
+      }
+
+      .patient-meta small {
+        color: var(--muted);
+      }
+
+      .badge {
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .badge.confirmed {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+
+      .badge.pending {
+        background: var(--warning-soft);
+        color: #b67b00;
+      }
+
+      .badge.emergency {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .wide-panel {
+        grid-column: 1 / -1;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      td {
+        font-size: 0.92rem;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+
+      .status-pill.healthy { background: var(--success-soft); color: var(--success); }
+      .status-pill.review { background: var(--warning-soft); color: #b67b00; }
+      .status-pill.follow-up { background: var(--danger-soft); color: var(--danger); }
+
+      .doctor-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .doctor-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--panel-alt);
+      }
+
+      .doctor-avatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #dfe9ff, #b9d0ff);
+        display: grid;
+        place-items: center;
+        color: var(--primary-dark);
+        font-weight: 800;
+      }
+
+      .doctor-card h4 {
+        margin: 0 0 3px;
+        font-size: 0.93rem;
+      }
+
+      .doctor-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .schedule {
+        display: inline-flex;
+        margin-top: 6px;
+        padding: 5px 8px;
+        border-radius: 999px;
+        font-size: 0.69rem;
+        font-weight: 700;
+        background: var(--primary-soft);
+        color: var(--primary-dark);
+      }
+
+      .stock-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .stock-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .stock-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .stock-bar {
+        height: 10px;
+        background: #eef2fb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .stock-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #6ecaff, #2d6cdf);
+      }
+
+      .billing-summary {
+        margin-top: 10px;
+      }
+
+      .billing-chart {
+        height: 150px;
+        display: flex;
+        align-items: end;
+        gap: 14px;
+        padding-top: 12px;
+      }
+
+      @media (max-width: 1024px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .app {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+        }
+
+        .topbar {
+          flex-wrap: wrap;
+        }
+
+        .search-box {
+          max-width: none;
+          width: 100%;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .form-grid,
+        .doctor-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="login-screen" id="loginScreen" aria-labelledby="loginTitle">
+      <form class="login-card" id="loginForm">
+        <div class="brand-mark">+</div>
+        <h1 id="loginTitle">CareHub Admin</h1>
+        <p>Sign in to access the hospital management system.</p>
+        <div class="input-group">
+          <label for="loginUsername">Username</label>
+          <input id="loginUsername" name="username" type="text" autocomplete="username" required />
+        </div>
+        <div class="input-group" style="margin-top: 14px;">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" required />
+        </div>
+        <p class="auth-error" id="loginError" role="alert"></p>
+        <button class="register-btn" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <div class="app" id="appShell" hidden>
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">+</div>
+          <h2>CareHub</h2>
+        </div>
+
+        <nav class="nav" aria-label="Main Navigation">
+          <a class="nav-item active" href="#dashboard" data-view="dashboard"><span class="nav-icon">⌂</span>Dashboard</a>
+          <a class="nav-item" href="#patients" data-view="patients"><span class="nav-icon">👥</span>Patients</a>
+          <a class="nav-item" href="#appointments" data-view="appointments"><span class="nav-icon">📅</span>Appointments</a>
+          <a class="nav-item" href="#doctors" data-view="doctors"><span class="nav-icon">🩺</span>Doctors</a>
+          <a class="nav-item" href="#pharmacy" data-view="pharmacy"><span class="nav-icon">💊</span>Pharmacy</a>
+          <a class="nav-item" href="#billing" data-view="billing"><span class="nav-icon">💳</span>Billing</a>
+          <a class="nav-item" href="#settings" data-view="settings" data-admin-only hidden><span class="nav-icon">⚙</span>Settings</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <h4>Emergency</h4>
+          <p>Emergency records will appear here when they are added.</p>
+          <button id="alertButton" type="button">View Alert Center</button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="search-box">
+            <input id="searchInput" type="text" placeholder="Search patients, doctors or departments" />
+          </div>
+
+          <div class="top-actions">
+            <button class="action-btn" id="exportButton" type="button" data-admin-only hidden>Export CSV</button>
+            <button class="action-btn primary-btn" id="addPatientButton" type="button">+ Add Patient</button>
+            <div class="user-pill">
+              <div class="avatar">AD</div>
+              <div>
+                <div class="user-name" id="signedInUser">Admin</div>
+                <div class="user-info" id="signedInRole">User</div>
+              </div>
+            </div>
+            <button class="action-btn" id="logoutButton" type="button">Sign out</button>
+          </div>
+        </header>
+
+        <div id="dashboardView">
+        <section class="stats" aria-label="Hospital metrics">
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Total Patients</span>
+              <div class="stat-icon blue">👨‍⚕️</div>
+            </div>
+            <p class="stat-value" id="patientCount">0</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Appointments</span>
+              <div class="stat-icon green">📆</div>
+            </div>
+            <p class="stat-value" id="appointmentCount">0</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Emergency</span>
+              <div class="stat-icon amber">🚑</div>
+            </div>
+            <p class="stat-value" id="emergencyCount">0</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-header">
+              <span>Revenue</span>
+              <div class="stat-icon red">💰</div>
+            </div>
+            <p class="stat-value" id="revenueTotal">0</p>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="card">
+            <h3>Patient Registration</h3>
+            <form id="patientForm">
+              <div class="form-grid">
+                <div class="input-group">
+                  <label for="patient-name">Patient Name</label>
+                  <input id="patient-name" name="name" type="text" placeholder="Enter full name" required />
+                </div>
+
+                <div class="input-group">
+                  <label for="patient-age">Age</label>
+                  <input id="patient-age" name="age" type="number" min="1" max="120" placeholder="Age" required />
+                </div>
+
+                <div class="input-group">
+                  <label for="patient-gender">Gender</label>
+                  <select id="patient-gender" name="gender" required>
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+
+                <div class="input-group">
+                  <label for="patient-dept">Department</label>
+                  <select id="patient-dept" name="department" required>
+                    <option value="">Select</option>
+                    <option>Cardiology</option>
+                    <option>Neurology</option>
+                    <option>Orthopedics</option>
+                    <option>Pediatrics</option>
+                    <option>General Medicine</option>
+                  </select>
+                </div>
+
+                <div class="input-group full">
+                  <label for="doctor-name">Doctor</label>
+                  <input id="doctor-name" name="doctor" type="text" placeholder="Enter doctor name" required />
+                </div>
+
+                <div class="input-group full">
+                  <label for="visit-date">Preferred Visit Date</label>
+                  <input id="visit-date" name="date" type="date" required />
+                </div>
+              </div>
+
+              <button class="register-btn" type="submit">Register Patient</button>
+            </form>
+          </article>
+
+          <article class="card">
+            <h3>Today's Appointments</h3>
+            <div class="appointment-list" id="dashboardAppointments">
+              <div class="empty-state">No appointments have been added.</div>
+            </div>
+          </article>
+
+          <article class="card wide-panel">
+            <h3>Patient Overview</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Department</th>
+                  <th>Doctor</th>
+                  <th>Visit date</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="patientTableBody">
+                <tr class="empty-row">
+                  <td colspan="7" class="empty-state">No patient records yet. Register a patient to get started.</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <article class="card">
+            <h3>Doctor Availability</h3>
+            <div class="doctor-grid">
+              <div class="empty-state" style="grid-column: 1 / -1;">No doctor records yet.</div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Pharmacy Stock</h3>
+            <div class="stock-list">
+              <div class="empty-state">No pharmacy stock records yet.</div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Billing Summary</h3>
+            <div class="billing-summary">
+              <div class="empty-state">Billing data will appear here when available.</div>
+            </div>
+          </article>
+        </section>
+        </div>
+
+        <section class="page-view" id="patientsView" hidden>
+          <div class="page-heading"><h1>Patients</h1></div>
+          <article class="card">
+            <h3>Register patient</h3>
+            <p class="notice">Use the patient registration form on the Dashboard to add a patient.</p>
+            <button class="action-btn primary-btn go-dashboard" type="button">Open registration form</button>
+          </article>
+          <article class="card table-wrap">
+            <h3>Patient records</h3>
+            <table><thead><tr><th>Name</th><th>Age</th><th>Gender</th><th>Department</th><th>Doctor</th><th>Visit date</th><th data-admin-only hidden>Actions</th></tr></thead><tbody id="patientsPageTable"></tbody></table>
+          </article>
+        </section>
+
+        <section class="page-view" id="appointmentsView" hidden>
+          <div class="page-heading"><h1>Appointments</h1></div>
+          <article class="card">
+            <h3>Schedule appointment</h3>
+            <form id="appointmentForm" class="form-grid">
+              <div class="input-group"><label for="appointmentPatient">Patient name</label><input id="appointmentPatient" name="patient" required /></div>
+              <div class="input-group"><label for="appointmentDoctor">Doctor</label><input id="appointmentDoctor" name="doctor" required /></div>
+              <div class="input-group"><label for="appointmentDepartment">Department</label><input id="appointmentDepartment" name="department" required /></div>
+              <div class="input-group"><label for="appointmentDate">Date</label><input id="appointmentDate" name="date" type="date" required /></div>
+              <div class="input-group"><label for="appointmentTime">Time</label><input id="appointmentTime" name="time" type="time" required /></div>
+              <div class="input-group"><label for="appointmentStatus">Status</label><select id="appointmentStatus" name="status"><option>Scheduled</option><option>Confirmed</option><option>Emergency</option><option>Completed</option><option>Cancelled</option></select></div>
+              <div class="input-group full"><button class="register-btn" type="submit">Save appointment</button></div>
+            </form>
+          </article>
+          <article class="card table-wrap"><h3>Appointment records</h3><table><thead><tr><th>Patient</th><th>Doctor</th><th>Department</th><th>Date</th><th>Time</th><th>Status</th><th data-admin-only hidden>Actions</th></tr></thead><tbody id="appointmentsTable"></tbody></table></article>
+        </section>
+
+        <section class="page-view" id="doctorsView" hidden>
+          <div class="page-heading"><h1>Doctors</h1></div>
+          <article class="card">
+            <h3>Add doctor</h3>
+            <form id="doctorForm" class="form-grid">
+              <div class="input-group"><label for="doctorFullName">Doctor name</label><input id="doctorFullName" name="name" required /></div>
+              <div class="input-group"><label for="doctorSpecialty">Specialty</label><input id="doctorSpecialty" name="specialty" required /></div>
+              <div class="input-group"><label for="doctorPhone">Phone</label><input id="doctorPhone" name="phone" type="tel" /></div>
+              <div class="input-group"><label for="doctorSchedule">Schedule</label><input id="doctorSchedule" name="schedule" placeholder="e.g. Mon-Fri, 9am-5pm" /></div>
+              <div class="input-group full"><button class="register-btn" type="submit">Save doctor</button></div>
+            </form>
+          </article>
+          <article class="card table-wrap"><h3>Doctor records</h3><table><thead><tr><th>Name</th><th>Specialty</th><th>Phone</th><th>Schedule</th><th data-admin-only hidden>Actions</th></tr></thead><tbody id="doctorsTable"></tbody></table></article>
+        </section>
+
+        <section class="page-view" id="pharmacyView" hidden>
+          <div class="page-heading"><h1>Pharmacy</h1></div>
+          <article class="card">
+            <h3>Add medicine stock</h3>
+            <form id="medicineForm" class="form-grid">
+              <div class="input-group"><label for="medicineName">Medicine name</label><input id="medicineName" name="name" required /></div>
+              <div class="input-group"><label for="medicineQuantity">Quantity</label><input id="medicineQuantity" name="quantity" type="number" min="0" required /></div>
+              <div class="input-group"><label for="medicineExpiry">Expiry date</label><input id="medicineExpiry" name="expiry" type="date" /></div>
+              <div class="input-group"><label for="medicinePrice">Unit price</label><input id="medicinePrice" name="price" type="number" min="0" step="0.01" /></div>
+              <div class="input-group full"><button class="register-btn" type="submit">Save medicine</button></div>
+            </form>
+          </article>
+          <article class="card table-wrap"><h3>Stock records</h3><table><thead><tr><th>Medicine</th><th>Quantity</th><th>Expiry</th><th>Unit price</th><th data-admin-only hidden>Actions</th></tr></thead><tbody id="pharmacyTable"></tbody></table></article>
+        </section>
+
+        <section class="page-view" id="billingView" hidden>
+          <div class="page-heading"><h1>Billing</h1></div>
+          <article class="card">
+            <h3>Create bill</h3>
+            <form id="billForm" class="form-grid">
+              <div class="input-group"><label for="billPatient">Patient name</label><input id="billPatient" name="patient" required /></div>
+              <div class="input-group"><label for="billDescription">Description</label><input id="billDescription" name="description" required /></div>
+              <div class="input-group"><label for="billAmount">Amount</label><input id="billAmount" name="amount" type="number" min="0" step="0.01" required /></div>
+              <div class="input-group"><label for="billStatus">Status</label><select id="billStatus" name="status"><option>Unpaid</option><option>Paid</option></select></div>
+              <div class="input-group full"><button class="register-btn" type="submit">Save bill</button></div>
+            </form>
+          </article>
+          <article class="card table-wrap"><h3>Billing records</h3><table><thead><tr><th>Patient</th><th>Description</th><th>Amount</th><th>Status</th><th data-admin-only hidden>Actions</th></tr></thead><tbody id="billingTable"></tbody></table></article>
+        </section>
+
+        <section class="page-view" id="settingsView" data-admin-only hidden>
+          <div class="page-heading"><h1>Settings</h1></div>
+          <article class="card">
+            <h3>Data storage</h3>
+            <p class="notice">Records are saved by the Python server in the hospital.db SQLite file on this computer. Keep the database file safe and back it up regularly.</p>
+            <button class="action-btn" id="clearDataButton" type="button" data-admin-only hidden>Clear all saved records</button>
+          </article>
+        </section>
+
+        <div class="modal-overlay" id="editModal" hidden>
+          <form class="modal-card" id="editForm">
+            <h2 id="editTitle">Edit record</h2>
+            <div class="form-grid" id="editFields"></div>
+            <div class="modal-actions">
+              <button class="action-btn" id="cancelEditButton" type="button">Cancel</button>
+              <button class="action-btn primary-btn" type="submit">Save changes</button>
+            </div>
+          </form>
+        </div>
+
+      </main>
+    </div>
+
+    <script>
+      const emptyRecords = () => ({ patients: [], appointments: [], doctors: [], medicines: [], bills: [] });
+      let records = emptyRecords();
+      let currentSession = null;
+
+      const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[character]);
+      function showLogin(message = '') {
+        document.getElementById('appShell').hidden = true;
+        document.getElementById('loginScreen').hidden = false;
+        document.getElementById('loginError').textContent = message;
+      }
+      function showApplication(session) {
+        currentSession = session;
+        document.getElementById('loginScreen').hidden = true;
+        document.getElementById('appShell').hidden = false;
+        document.getElementById('signedInUser').textContent = session.username;
+        document.getElementById('signedInRole').textContent = session.role === 'admin' ? 'Administrator' : 'User';
+        document.querySelector('.avatar').textContent = session.username.slice(0, 2).toUpperCase();
+        document.querySelectorAll('[data-admin-only]').forEach((element) => {
+          element.hidden = session.role !== 'admin';
+        });
+      }
+      async function apiRequest(path, options = {}) {
+        const response = await fetch(path, {
+          ...options,
+          headers: { 'Content-Type': 'application/json', ...options.headers }
+        });
+
+        const rawText = await response.text();
+        let result = {};
+
+        if (rawText) {
+          try {
+            result = JSON.parse(rawText);
+          } catch (error) {
+            console.error(`Invalid JSON response from ${path}:`, rawText.slice(0, 200));
+            throw new Error('The server returned an invalid response.');
+          }
+        }
+
+        if (response.status === 401) {
+          showLogin('Session expired. Please sign in again.');
+        }
+        if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+        return result;
+      }
+      async function loadRecords() {
+        try {
+          records = await apiRequest('/api/records');
+          render();
+        } catch (error) {
+          console.error('Unable to load hospital records from the Python server.', error);
+          alert('Python server se data load nahi hua. Dashboard ko app.py ke through http://127.0.0.1:8000 par kholen.');
+        }
+      };
+      const emptyRow = (columns, label) => `<tr><td colspan="${columns}" class="empty-state">${label}</td></tr>`;
+      const actionCell = (type, id) => currentSession && currentSession.role === 'admin'
+        ? `<td><button class="table-action" data-action="edit" data-type="${type}" data-id="${id}" type="button">Edit</button><button class="table-action delete" data-action="delete" data-type="${type}" data-id="${id}" type="button">Delete</button></td>`
+        : '<td></td>';
+      const formatMoney = (amount) => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(Number(amount) || 0);
+
+      function render() {
+        const patientRows = records.patients.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.gender)}</td><td>${escapeHtml(p.department)}</td><td>${escapeHtml(p.doctor)}</td><td>${escapeHtml(p.date)}</td><td>${escapeHtml(p.status || 'Registered')}</td></tr>`).join('');
+        document.getElementById('patientTableBody').innerHTML = patientRows || emptyRow(7, 'No patient records yet. Register a patient to get started.');
+        document.getElementById('patientsPageTable').innerHTML = records.patients.map((p) => `<tr><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.gender)}</td><td>${escapeHtml(p.department)}</td><td>${escapeHtml(p.doctor)}</td><td>${escapeHtml(p.date)}</td>${actionCell('patients', p.id)}</tr>`).join('') || emptyRow(7, 'No patient records yet.');
+        document.getElementById('appointmentsTable').innerHTML = records.appointments.map((a) => `<tr><td>${escapeHtml(a.patient)}</td><td>${escapeHtml(a.doctor)}</td><td>${escapeHtml(a.department)}</td><td>${escapeHtml(a.date)}</td><td>${escapeHtml(a.time)}</td><td>${escapeHtml(a.status)}</td>${actionCell('appointments', a.id)}</tr>`).join('') || emptyRow(7, 'No appointments yet.');
+        document.getElementById('doctorsTable').innerHTML = records.doctors.map((d) => `<tr><td>${escapeHtml(d.name)}</td><td>${escapeHtml(d.specialty)}</td><td>${escapeHtml(d.phone)}</td><td>${escapeHtml(d.schedule)}</td>${actionCell('doctors', d.id)}</tr>`).join('') || emptyRow(5, 'No doctor records yet.');
+        document.getElementById('pharmacyTable').innerHTML = records.medicines.map((m) => `<tr><td>${escapeHtml(m.name)}</td><td>${escapeHtml(m.quantity)}</td><td>${escapeHtml(m.expiry || '—')}</td><td>${escapeHtml(m.price ? formatMoney(m.price) : '—')}</td>${actionCell('medicines', m.id)}</tr>`).join('') || emptyRow(5, 'No pharmacy stock records yet.');
+        document.getElementById('billingTable').innerHTML = records.bills.map((b) => `<tr><td>${escapeHtml(b.patient)}</td><td>${escapeHtml(b.description)}</td><td>${escapeHtml(formatMoney(b.amount))}</td><td>${escapeHtml(b.status)}</td>${actionCell('bills', b.id)}</tr>`).join('') || emptyRow(5, 'No billing records yet.');
+        const today = new Date().toISOString().slice(0, 10);
+        const todayAppointments = records.appointments.filter((a) => a.date === today).sort((a, b) => a.time.localeCompare(b.time));
+        document.getElementById('dashboardAppointments').innerHTML = todayAppointments.map((a) => `<div class="appointment-item"><div class="patient-meta"><h4>${escapeHtml(a.patient)}</h4><small>${escapeHtml(a.department)} · ${escapeHtml(a.time)}</small></div><span class="badge ${a.status === 'Emergency' ? 'emergency' : a.status === 'Confirmed' ? 'confirmed' : 'pending'}">${escapeHtml(a.status)}</span></div>`).join('') || '<div class="empty-state">No appointments scheduled for today.</div>';
+        document.getElementById('patientCount').textContent = records.patients.length;
+        document.getElementById('appointmentCount').textContent = records.appointments.length;
+        document.getElementById('emergencyCount').textContent = records.appointments.filter((a) => a.status === 'Emergency').length;
+        document.getElementById('revenueTotal').textContent = formatMoney(records.bills.filter((b) => b.status === 'Paid').reduce((sum, b) => sum + Number(b.amount), 0));
+        document.querySelector('.doctor-grid').innerHTML = records.doctors.map((d) => `<div class="doctor-card"><div class="doctor-avatar">${escapeHtml(d.name.trim().split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase())}</div><div><h4>${escapeHtml(d.name)}</h4><p>${escapeHtml(d.specialty)}</p><span class="schedule">${escapeHtml(d.schedule || 'Schedule not set')}</span></div></div>`).join('') || '<div class="empty-state" style="grid-column: 1 / -1;">No doctor records yet.</div>';
+        document.querySelector('.stock-list').innerHTML = records.medicines.map((m) => `<div class="stock-row"><div class="stock-top"><span>${escapeHtml(m.name)}</span><strong>${escapeHtml(m.quantity)}</strong></div></div>`).join('') || '<div class="empty-state">No pharmacy stock records yet.</div>';
+        document.querySelector('.billing-summary').innerHTML = `<div class="empty-state">${records.bills.length ? `${records.bills.length} bill(s) recorded. Paid total: ${escapeHtml(formatMoney(records.bills.filter((b) => b.status === 'Paid').reduce((sum, b) => sum + Number(b.amount), 0)))}.` : 'Billing data will appear here when available.'}</div>`;
+      }
+
+      function showView(view) {
+        document.getElementById('dashboardView').hidden = view !== 'dashboard';
+        document.querySelectorAll('.page-view').forEach((section) => { section.hidden = section.id !== `${view}View`; });
+        document.querySelectorAll('.nav-item').forEach((link) => link.classList.toggle('active', link.dataset.view === view));
+      }
+
+      document.querySelectorAll('.nav-item').forEach((link) => link.addEventListener('click', (event) => {
+        event.preventDefault();
+        showView(link.dataset.view);
+      }));
+      document.querySelectorAll('.go-dashboard').forEach((button) => button.addEventListener('click', () => {
+        showView('dashboard');
+        document.getElementById('patient-name').focus();
+      }));
+      document.getElementById('addPatientButton').addEventListener('click', () => {
+        showView('dashboard');
+        document.getElementById('patient-name').focus();
+      });
+      document.getElementById('alertButton').addEventListener('click', () => showView('appointments'));
+
+      document.getElementById('patientForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const data = Object.fromEntries(new FormData(form));
+        try {
+          const patient = await apiRequest('/api/patients', {
+            method: 'POST',
+            body: JSON.stringify({ ...data, status: 'Registered' })
+          });
+          records.patients.unshift(patient);
+          form.reset();
+          render();
+          alert('Patient registered and saved to the database.');
+        } catch (error) {
+          console.error('Unable to register patient.', error);
+          alert(`Patient save nahi hua: ${error.message}`);
+        }
+      });
+
+      const formConfigs = [
+        ['appointmentForm', 'appointments', ['patient', 'doctor', 'department', 'date', 'time', 'status'], 'Appointment saved.'],
+        ['doctorForm', 'doctors', ['name', 'specialty', 'phone', 'schedule'], 'Doctor saved.'],
+        ['medicineForm', 'medicines', ['name', 'quantity', 'expiry', 'price'], 'Medicine stock saved.'],
+        ['billForm', 'bills', ['patient', 'description', 'amount', 'status'], 'Bill saved.']
+      ];
+      formConfigs.forEach(([formId, type, fields, message]) => {
+        document.getElementById(formId).addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const data = Object.fromEntries(new FormData(form));
+          try {
+            const record = await apiRequest(`/api/${type}`, {
+              method: 'POST',
+              body: JSON.stringify(data)
+            });
+            records[type].unshift(record);
+            form.reset();
+            render();
+            alert(message);
+          } catch (error) {
+            console.error(`Unable to save ${type} record.`, error);
+            alert(`Record save nahi hua: ${error.message}`);
+          }
+        });
+      });
+
+      document.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-action]');
+        if (!button) return;
+        if (!currentSession || currentSession.role !== 'admin') return;
+        const { action, type, id } = button.dataset;
+        const record = records[type].find((item) => item.id === id);
+        if (!record) return;
+        if (action === 'delete') {
+          if (!confirm(`Delete this ${type === 'medicines' ? 'medicine' : type.slice(0, -1)} record?`)) return;
+          try {
+            await apiRequest(`/api/${type}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+            records[type] = records[type].filter((item) => item.id !== id);
+            render();
+          } catch (error) {
+            console.error(`Unable to delete ${type} record.`, error);
+            alert(`Record delete nahi hua: ${error.message}`);
+          }
+          return;
+        }
+        if (action === 'edit') {
+          const fieldLabels = {
+            patients: { name: 'Patient name', age: 'Age', gender: 'Gender', department: 'Department', doctor: 'Doctor', date: 'Visit date', status: 'Status' },
+            appointments: { patient: 'Patient', doctor: 'Doctor', department: 'Department', date: 'Date', time: 'Time', status: 'Status' },
+            doctors: { name: 'Doctor name', specialty: 'Specialty', phone: 'Phone', schedule: 'Schedule' },
+            medicines: { name: 'Medicine name', quantity: 'Quantity', expiry: 'Expiry date', price: 'Unit price' },
+            bills: { patient: 'Patient', description: 'Description', amount: 'Amount', status: 'Status' }
+          };
+          const numberFields = { patients: ['age'], medicines: ['quantity', 'price'], bills: ['amount'] };
+          const fieldContainer = document.getElementById('editFields');
+          fieldContainer.innerHTML = Object.entries(fieldLabels[type]).map(([field, label]) => {
+            const inputType = numberFields[type].includes(field) ? 'number' : type === 'appointments' && field === 'date' ? 'date' : type === 'appointments' && field === 'time' ? 'time' : 'text';
+            const step = field === 'price' || field === 'amount' ? ' step="0.01" min="0"' : '';
+            const min = inputType === 'number' && !step ? ' min="0"' : '';
+            return `<div class="input-group"><label for="edit-${field}">${escapeHtml(label)}</label><input id="edit-${field}" name="${field}" type="${inputType}" value="${escapeHtml(record[field])}"${step}${min} required /></div>`;
+          }).join('');
+          document.getElementById('editTitle').textContent = `Edit ${type === 'medicines' ? 'medicine' : type.slice(0, -1)}`;
+          document.getElementById('editForm').dataset.type = type;
+          document.getElementById('editForm').dataset.id = id;
+          document.getElementById('editModal').hidden = false;
+        }
+      });
+
+      document.getElementById('cancelEditButton').addEventListener('click', () => {
+        document.getElementById('editModal').hidden = true;
+      });
+
+      document.getElementById('loginForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const credentials = Object.fromEntries(new FormData(form));
+        const errorElement = document.getElementById('loginError');
+        errorElement.textContent = '';
+        try {
+          const session = await apiRequest('/api/login', {
+            method: 'POST',
+            body: JSON.stringify(credentials)
+          });
+          showApplication(session);
+          form.reset();
+          await loadRecords();
+        } catch (error) {
+          console.error('Sign-in failed.', error);
+          errorElement.textContent = error.message;
+        }
+      });
+
+      document.getElementById('logoutButton').addEventListener('click', async () => {
+        try {
+          await apiRequest('/api/logout', { method: 'POST', body: '{}' });
+          records = emptyRecords();
+          showLogin();
+        } catch (error) {
+          console.error('Unable to sign out.', error);
+          alert(`Sign out failed: ${error.message}`);
+        }
+      });
+
+      document.getElementById('editForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!currentSession || currentSession.role !== 'admin') return;
+        const form = event.currentTarget;
+        const type = form.dataset.type;
+        const id = form.dataset.id;
+        const index = records[type].findIndex((item) => item.id === id);
+        if (index < 0) return;
+        const data = Object.fromEntries(new FormData(form));
+        try {
+          const updated = await apiRequest(`/api/${type}/${encodeURIComponent(id)}`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+          });
+          records[type][index] = updated;
+          document.getElementById('editModal').hidden = true;
+          render();
+        } catch (error) {
+          console.error(`Unable to update ${type} record.`, error);
+          alert(`Record update nahi hua: ${error.message}`);
+        }
+      });
+
+      document.getElementById('searchInput').addEventListener('input', (event) => {
+        const term = event.currentTarget.value.trim().toLowerCase();
+        document.querySelectorAll('tbody tr').forEach((row) => {
+          row.hidden = !row.textContent.toLowerCase().includes(term);
+        });
+      });
+
+      document.getElementById('exportButton').addEventListener('click', () => {
+        const headers = ['type', 'name/patient', 'details', 'date', 'status/quantity/amount'];
+        const rows = [headers];
+        records.patients.forEach((p) => rows.push(['Patient', p.name, `${p.age}; ${p.gender}; ${p.department}; ${p.doctor}`, p.date, p.status]));
+        records.appointments.forEach((a) => rows.push(['Appointment', a.patient, `${a.doctor}; ${a.department}; ${a.time}`, a.date, a.status]));
+        records.doctors.forEach((d) => rows.push(['Doctor', d.name, `${d.specialty}; ${d.phone}; ${d.schedule}`, '', '']));
+        records.medicines.forEach((m) => rows.push(['Medicine', m.name, `Expiry: ${m.expiry}`, '', `Quantity: ${m.quantity}; Price: ${m.price}`]));
+        records.bills.forEach((b) => rows.push(['Bill', b.patient, b.description, '', `${b.status}; ${b.amount}`]));
+        const csv = rows.map((row) => row.map((value) => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')).join('\r\n');
+        const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'carehub-records.csv';
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      });
+
+      document.getElementById('clearDataButton').addEventListener('click', async () => {
+        if (!confirm('This will permanently remove all CareHub records saved in the database. Continue?')) return;
+        try {
+          await apiRequest('/api/records', { method: 'DELETE' });
+          records = emptyRecords();
+          render();
+        } catch (error) {
+          console.error('Unable to clear hospital records.', error);
+          alert(`Records clear nahi hue: ${error.message}`);
+        }
+      });
+
+      async function checkSession() {
+        try {
+          const session = await apiRequest('/api/session');
+          if (!session.authenticated) {
+            showLogin();
+            return;
+          }
+          showApplication(session);
+          await loadRecords();
+        } catch (error) {
+          console.error('Unable to check the sign-in session.', error);
+          showLogin('Could not connect to the Python server. Please refresh and try again.');
+        }
+      }
+
+      checkSession();
+    </script>
+  </body>
+</html>

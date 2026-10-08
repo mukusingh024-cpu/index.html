@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}CarePoint | Admin Login{% endblock %}
+
+{% block content %}
+<div class="login-body">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-logo">✚</div>
+      <h1>Admin Access</h1>
+      <p>Enter the dashboard password to continue.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack login-flash">
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" class="login-form">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Enter password" required>
+        <button type="submit">Open dashboard</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}
